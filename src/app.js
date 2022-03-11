@@ -24,7 +24,7 @@ const url = `mongodb+srv://${dbUser}:${dbPassword}@cluster0.akixk.mongodb.net/my
 mongoose
   .connect(url, { useNewUrlParser: true })
   .then(() => {
-    app.listen(3333);
+    app.listen(process.env.PORT || 3333);
     console.log('conectou ao banco!');
   })
   .catch((err) => console.log(err));
