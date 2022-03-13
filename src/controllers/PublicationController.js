@@ -65,7 +65,15 @@ module.exports = {
         return res.status(404).json({ msg: 'Publicação não encontrada!' });
       }
 
-      return res.json(publication);
+      const institution = await Institution.findById(publication.idInstitution);
+
+      const newInstitution = {
+        imageInstitution: institution.logoImage,
+        typeInstitution: institution.type,
+        nameInstitution: institution.name,
+      };
+
+      return res.json({ publication, institution: newInstitution });
     } catch (error) {
       return res.status(500).json({ msg: error });
     }
@@ -113,6 +121,36 @@ module.exports = {
       await Publication.findOneAndDelete({ _id: id });
 
       return res.status(200).json({ msg: 'Publicação removida com sucesso!' });
+    } catch (error) {
+      return res.status(500).json({ msg: error });
+    }
+  },
+
+  async likePublication(req, res) {
+    try {
+      const { id } = req.params;
+      const { idUser, like } = req.body;
+
+      if (!id) {
+        return res.status(422).json({ msg: 'Id da publicação é obrigatório' });
+      }
+
+      if (!idUser) {
+        return res.status(422).json({ msg: 'Id do usuário é obrigatório' });
+      }
+
+      const publication = await Publication.findById(id);
+
+      if (like) {
+        publication.likes.push(idUser);
+      } else {
+        const index = publication.likes.indexOf(idUser);
+        publication.likes.splice(index, 1);
+      }
+
+      await publication.save();
+
+      return res.status(200).json(publication);
     } catch (error) {
       return res.status(500).json({ msg: error });
     }

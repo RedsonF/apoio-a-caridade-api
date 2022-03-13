@@ -27,6 +27,10 @@ const PublicationSchema = new Schema(
       type: [String],
       required: true,
     },
+    likes: {
+      type: [String],
+      required: false,
+    },
   },
   { timestamps: true }
 );

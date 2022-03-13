@@ -15,6 +15,7 @@ router.post(
 router.get('/', authorize, PublicationController.getPublication);
 router.get('/:id', authorize, PublicationController.getPublicationById);
 router.put('/:id', authorize, PublicationController.updatePublication);
+router.put('/like/:id', authorize, PublicationController.likePublication);
 router.delete('/:id', authorize, PublicationController.deletePublication);
 
 module.exports = router;

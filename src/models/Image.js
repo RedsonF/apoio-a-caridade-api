@@ -15,19 +15,4 @@ const ImageSchema = new mongoose.Schema({
   },
 });
 
-ImageSchema.pre('remove', function () {
-  return s3
-    .deleteObject({
-      Bucket: process.env.BUCKET_NAME,
-      Key: this.key,
-    })
-    .promise()
-    .then((response) => {
-      console.log(response.status);
-    })
-    .catch((response) => {
-      console.log(response.status);
-    });
-});
-
 module.exports = mongoose.model('Image', ImageSchema);
