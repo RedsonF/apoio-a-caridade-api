@@ -79,7 +79,11 @@ module.exports = {
 
   async getInstitution(req, res) {
     try {
-      const institutions = await Institution.find();
+      const fields = handleFields(req.query);
+
+      const institutions = await Institution.find(fields).select(
+        '-tokens -password'
+      );
       return res.json(institutions);
     } catch (error) {
       return res.status(500).json({ msg: error.message });
@@ -178,6 +182,30 @@ module.exports = {
       return res.status(500).send({ message: error.message });
     }
   },
+};
+
+const handleFields = (fields) => {
+  const fieldsHandle = {};
+
+  if (fields.name != '' && fields.name) {
+    fieldsHandle['name'] = new RegExp('\\b.*' + fields.name + '.*\\b', 'i');
+  }
+
+  if (fields.city != '' && fields.city) {
+    fieldsHandle['location.city'] = new RegExp(
+      '\\b.*' + fields.city + '.*\\b',
+      'i'
+    );
+  }
+
+  if (fields.state != '' && fields.state) {
+    fieldsHandle['location.state'] = new RegExp(
+      '\\b.*' + fields.state + '.*\\b',
+      'i'
+    );
+  }
+
+  return fieldsHandle;
 };
 
 const updateBody = (body) => {

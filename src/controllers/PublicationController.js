@@ -156,3 +156,27 @@ module.exports = {
     }
   },
 };
+
+const handleFields = (fields) => {
+  const fieldsHandle = {};
+
+  if (fields.name != '' && fields.name) {
+    fieldsHandle['name'] = new RegExp('\\b.*' + fields.name + '.*\\b', 'i');
+  }
+
+  if (fields.city != '' && fields.city) {
+    fieldsHandle['location.city'] = new RegExp(
+      '\\b.*' + fields.city + '.*\\b',
+      'i'
+    );
+  }
+
+  if (fields.state != '' && fields.state) {
+    fieldsHandle['location.state'] = new RegExp(
+      '\\b.*' + fields.state + '.*\\b',
+      'i'
+    );
+  }
+
+  return fieldsHandle;
+};
