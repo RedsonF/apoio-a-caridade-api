@@ -49,7 +49,26 @@ module.exports = {
 
   async getPublication(req, res) {
     try {
-      const publications = await Publication.find();
+      const fields = handleFields(req.query);
+      const fieldsInst = handleFieldsInstitution(req.query);
+
+      const { types } = req.query;
+
+      const institutions = await Institution.find({
+        ...fieldsInst,
+        type: { $in: types },
+      }).select('-tokens -password');
+
+      const ids = institutions.map((inst) => inst._id);
+
+      const publications = await Publication.find({
+        ...fields,
+        idInstitution: { $in: ids },
+      }).populate({
+        path: 'idInstitution',
+        select: '-password -publications -tokens -cnpj',
+      });
+
       return res.json(publications);
     } catch (error) {
       return res.status(500).json({ msg: error });
@@ -157,11 +176,10 @@ module.exports = {
   },
 };
 
-const handleFields = (fields) => {
+const handleFieldsInstitution = (fields) => {
   const fieldsHandle = {};
-
-  if (fields.name != '' && fields.name) {
-    fieldsHandle['name'] = new RegExp('\\b.*' + fields.name + '.*\\b', 'i');
+  if (fields.title != '' && fields.title) {
+    fieldsHandle['title'] = new RegExp('\\b.*' + fields.title + '.*\\b', 'i');
   }
 
   if (fields.city != '' && fields.city) {
@@ -176,6 +194,15 @@ const handleFields = (fields) => {
       '\\b.*' + fields.state + '.*\\b',
       'i'
     );
+  }
+
+  return fieldsHandle;
+};
+
+const handleFields = (fields) => {
+  const fieldsHandle = {};
+  if (fields.title != '' && fields.title) {
+    fieldsHandle['title'] = new RegExp('\\b.*' + fields.title + '.*\\b', 'i');
   }
 
   return fieldsHandle;

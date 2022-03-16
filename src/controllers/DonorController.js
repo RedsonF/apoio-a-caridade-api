@@ -48,7 +48,7 @@ module.exports = {
     const preferences = {
       state: '',
       city: '',
-      typesOfInstitution: [],
+      typesOfInstitution: ['beneficentes', 'fundações', 'institutos', 'ongs'],
     };
 
     try {

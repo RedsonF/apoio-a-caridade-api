@@ -80,10 +80,13 @@ module.exports = {
   async getInstitution(req, res) {
     try {
       const fields = handleFields(req.query);
+      const { types } = req.query;
 
-      const institutions = await Institution.find(fields).select(
-        '-tokens -password'
-      );
+      const institutions = await Institution.find({
+        ...fields,
+        type: { $in: types },
+      }).select('-tokens -password');
+
       return res.json(institutions);
     } catch (error) {
       return res.status(500).json({ msg: error.message });
@@ -186,7 +189,6 @@ module.exports = {
 
 const handleFields = (fields) => {
   const fieldsHandle = {};
-
   if (fields.name != '' && fields.name) {
     fieldsHandle['name'] = new RegExp('\\b.*' + fields.name + '.*\\b', 'i');
   }
