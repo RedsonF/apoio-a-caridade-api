@@ -30,7 +30,6 @@ module.exports = {
       }
 
       const newImages = files.map((file) => file.location);
-      console.log(newImages);
 
       const publication = await Publication.create({
         title,
@@ -53,10 +52,11 @@ module.exports = {
       const fieldsInst = handleFieldsInstitution(req.query);
 
       const { types } = req.query;
+      const newTypes = types || ['beneficente', 'fundação', 'instituto', 'ong'];
 
       const institutions = await Institution.find({
         ...fieldsInst,
-        type: { $in: types },
+        type: { $in: newTypes },
       }).select('-tokens -password');
 
       const ids = institutions.map((inst) => inst._id);

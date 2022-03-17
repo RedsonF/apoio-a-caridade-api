@@ -81,10 +81,11 @@ module.exports = {
     try {
       const fields = handleFields(req.query);
       const { types } = req.query;
+      const newTypes = types || ['beneficente', 'fundação', 'instituto', 'ong'];
 
       const institutions = await Institution.find({
         ...fields,
-        type: { $in: types },
+        type: { $in: newTypes },
       }).select('-tokens -password');
 
       return res.json(institutions);
