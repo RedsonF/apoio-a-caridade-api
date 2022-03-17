@@ -103,7 +103,9 @@ module.exports = {
         return res.status(404).json({ msg: 'Instituição não encontrada!' });
       }
 
-      const publications = await Publication.find({ idInstitution: id });
+      const publications = await Publication.find({ idInstitution: id }).sort(
+        '-createdAt'
+      );
 
       return res.status(200).json({ institution, publications });
     } catch (error) {

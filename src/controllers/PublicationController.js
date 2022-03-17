@@ -64,10 +64,12 @@ module.exports = {
       const publications = await Publication.find({
         ...fields,
         idInstitution: { $in: ids },
-      }).populate({
-        path: 'idInstitution',
-        select: '-password -publications -tokens -cnpj',
-      });
+      })
+        .populate({
+          path: 'idInstitution',
+          select: '-password -publications -tokens -cnpj',
+        })
+        .sort('-createdAt');
 
       return res.json(publications);
     } catch (error) {
