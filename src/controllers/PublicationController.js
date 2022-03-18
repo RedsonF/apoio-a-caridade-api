@@ -52,7 +52,7 @@ module.exports = {
       const fieldsInst = handleFieldsInstitution(req.query);
 
       const { types } = req.query;
-      const newTypes = types || ['beneficente', 'fundação', 'instituto', 'ong'];
+      const newTypes = types || ['beneficente', 'instituto', 'ong'];
 
       const institutions = await Institution.find({
         ...fieldsInst,
